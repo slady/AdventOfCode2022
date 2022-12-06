@@ -25,3 +25,5 @@ hs_err_pid*
 out/
 *.iml
 .idea/
+a.txt
+a-.txt
