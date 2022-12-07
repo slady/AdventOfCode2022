@@ -1,5 +1,3 @@
-package advent2022
-
 import java.io.IOException
 
 object A06 {
