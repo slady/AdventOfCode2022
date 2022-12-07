@@ -13,61 +13,37 @@ object A07a {
         println(findSmallest(dirs))
     }
 
-    private fun countHigher(dirs: ArrayList<Dir?>): Int {
-        var sum = 0
-        for (dir in dirs) {
-            val size = dir!!.countSize()
-            if (size <= 100000) {
-                sum += size
-            }
-        }
-        return sum
+    private fun countHigher(dirs: ArrayList<Dir>): Int {
+        return dirs.filter { d -> d.size <= 100000 }.sumOf(Dir::size)
     }
 
-    private fun findSmallest(dirs: ArrayList<Dir?>): Int {
-        var max = dirs[0]!!.countSize()
-        val limit = max - 40000000
-        for (dir in dirs) {
-            val size = dir!!.countSize()
-            if (size in limit..max) {
-                max = size
-            }
-        }
-        return max
+    private fun findSmallest(dirs: ArrayList<Dir>): Int {
+        val limit = dirs[0].size - 40000000
+        return dirs.filter { d -> d.size >= limit }.minOf(Dir::size)
     }
 
     @Throws(IOException::class)
-    private fun readStructure(): ArrayList<Dir?> {
-        val lines = Files.readAllLines(Paths.get("a.txt"))
-        val dirs = ArrayList<Dir?>()
-        var active: Dir? = Dir("/", null)
+    private fun readStructure(): ArrayList<Dir> {
+        val dirs = ArrayList<Dir>()
+        var active = Dir("/", null)
         dirs.add(active)
 
-        for (line in lines) {
+        for (line in Files.readAllLines(Paths.get("a.txt"))) {
             if (line.startsWith("$ cd ")) {
                 val dirName = line.substring(5, line.length)
-                if (dirName == "/") {
-                    active = dirs[0]
-                } else if (dirName == "..") {
-                    active = active!!.parent
-                } else {
-                    for (dirEntry in active!!.dirEntries) {
-                        if (dirEntry is Dir && dirEntry.name == dirName) {
-                            active = dirEntry as Dir
-                        }
-                    }
+                active = when (dirName) {
+                    "/" -> dirs[0]
+                    ".." -> active.parent!!
+                    else -> active.dirEntries.filterIsInstance<Dir>().first { d -> d.name == dirName }
                 }
-            } else if (line == "$ ls") {
-                // just ignore this
             } else if (line.startsWith("dir ")) {
-                val dir = Dir(line.substring(4, line.length), active)
-                active!!.add(dir)
-                dirs.add(dir)
-            } else {
-                val s = line.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                active!!.add(File(s[1], s[0].toInt()))
+                dirs.add(Dir(line.substring(4, line.length), active))
+            } else if (line != "$ ls") { // just ignore this
+                val s = line.split(' ')
+                active.dirEntries.add(File(s[0].toInt(), s[1]))
             }
         }
+        dirs[0].countSize()
         return dirs
     }
 }
@@ -78,16 +54,21 @@ internal abstract class DirEntry protected constructor(val name: String) {
 
 internal class Dir(name: String, val parent: Dir?) : DirEntry(name) {
     val dirEntries: MutableList<DirEntry> = ArrayList()
-    fun add(dirEntry: DirEntry) {
-        dirEntries.add(dirEntry)
+
+    var size = 0
+        private set
+
+    init {
+        parent?.dirEntries?.add(this)
     }
 
     override fun countSize(): Int {
-        return dirEntries.sumOf(DirEntry::countSize)
+        size = dirEntries.sumOf(DirEntry::countSize)
+        return size
     }
 }
 
-internal class File(name: String, private val size: Int) : DirEntry(name) {
+internal class File(private val size: Int, name: String) : DirEntry(name) {
     override fun countSize(): Int {
         return size
     }
