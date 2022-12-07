@@ -37,8 +37,7 @@ object A07a {
             } else if (line.startsWith("dir ")) {
                 dirs.add(Dir(line.substring(4, line.length), active))
             } else if (line != "$ ls") { // just ignore this
-                val s = line.split(' ')
-                active.dirEntries.add(File(s[0].toInt(), s[1]))
+                active.dirEntries.add(File(line.substring(0, line.indexOf(' ')).toInt()))
             }
         }
         dirs[0].countSize()
@@ -46,11 +45,11 @@ object A07a {
     }
 }
 
-internal abstract class DirEntry protected constructor(val name: String) {
+internal abstract class DirEntry {
     abstract fun countSize(): Int
 }
 
-internal class Dir(name: String, val parent: Dir?) : DirEntry(name) {
+internal class Dir(val name: String, val parent: Dir?) : DirEntry() {
     val dirEntries: MutableList<DirEntry> = ArrayList()
 
     var size = 0
@@ -66,7 +65,7 @@ internal class Dir(name: String, val parent: Dir?) : DirEntry(name) {
     }
 }
 
-internal class File(private val size: Int, name: String) : DirEntry(name) {
+internal class File(private val size: Int) : DirEntry() {
     override fun countSize(): Int {
         return size
     }
