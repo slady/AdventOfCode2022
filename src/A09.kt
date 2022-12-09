@@ -1,16 +1,17 @@
 import java.io.IOException
 import java.nio.file.Paths
 import java.util.*
+import kotlin.math.abs
 
 internal class Creeper {
     var x = 250
     var y = 250
 
-    fun step(leader: Creeper?) {
-        val dx = leader!!.x - x
+    fun step(leader: Creeper) {
+        val dx = leader.x - x
         val dy = leader.y - y
 
-        if (Math.abs(dx) != 2 && Math.abs(dy) != 2) {
+        if (abs(dx) != 2 && abs(dy) != 2) {
             return
         }
 
@@ -36,14 +37,11 @@ object A09a {
         val scanner = Scanner(Paths.get("a.txt"))
         val array = Array(500) { BooleanArray(500) }
 
-        val c = arrayOfNulls<Creeper>(r)
-        for (i in 0 until r) {
-            c[i] = Creeper()
-        }
+        val c = Array(r) { Creeper() }
 
         val h = c[0]
         val t = c[r - 1]
-        array[t!!.x][t.y] = true
+        array[t.x][t.y] = true
 
         while (scanner.hasNext()) {
             val d = scanner.next()[0]
@@ -51,14 +49,14 @@ object A09a {
 
             for (i in 0 until s) {
                 when (d) {
-                    'L' -> h!!.x--
-                    'R' -> h!!.x++
-                    'U' -> h!!.y++
-                    'D' -> h!!.y--
+                    'L' -> h.x--
+                    'R' -> h.x++
+                    'U' -> h.y++
+                    'D' -> h.y--
                 }
 
                 for (j in 1 until r) {
-                    c[j]!!.step(c[j - 1])
+                    c[j].step(c[j - 1])
                 }
 
                 array[t.x][t.y] = true
