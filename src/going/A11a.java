@@ -57,17 +57,12 @@ public class A11a {
         for (int m = 0; m < monkeyCount; m++) {
             final int mp = m * 7;
             final String operation = lines.get(mp + 2);
-            Integer operationNumber;
-            try {
-                operationNumber = Integer.parseInt(operation.substring(25));
-            } catch (NumberFormatException e) {
-                operationNumber = null;
-            }
+            final String operationValue = operation.substring(25);
 
             monkeys.add(new Monkey(
                     Arrays.stream(lines.get(mp + 1).substring(18).split(", ")).mapToInt(Integer::parseInt).boxed().toList(),
                     operation.charAt(23),
-                    operationNumber,
+                    "old".equals(operationValue) ? null : Integer.parseInt(operationValue),
                     Integer.parseInt(lines.get(mp + 3).substring(21)),
                     Integer.parseInt(lines.get(mp + 4).substring(29)),
                     Integer.parseInt(lines.get(mp + 5).substring(30))));
