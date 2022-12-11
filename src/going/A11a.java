@@ -12,6 +12,7 @@ class Monkey {
     final char operationSymbol;
     final Integer operationNumber;
     final int testDivisibleNumber, trueMonkey, falseMonkey;
+    int inspect = 0;
 
     Monkey(List<Integer> items, char operationSymbol, Integer operationNumber, int testDivisibleNumber, int trueMonkey, int falseMonkey) {
         this.items = new ArrayList<>(items);
@@ -30,11 +31,22 @@ public class A11a {
         for (int r = 0; r < 20; r++) {
             for (Monkey monkey : monkeys) {
                 for (int item : monkey.items) {
-                    ;
+                    final int number = monkey.operationNumber == null ? item : monkey.operationNumber;
+                    if (monkey.operationSymbol == '*') {
+                        item *= number;
+                    } else {
+                        item += number;
+                    }
+                    item /= 3;
+                    monkeys.get(item % monkey.testDivisibleNumber == 0 ? monkey.trueMonkey : monkey.falseMonkey).items.add(item);
+                    monkey.inspect++;
                 }
                 monkey.items.clear();
             }
         }
+
+        int[] active = monkeys.stream().mapToInt(m -> m.inspect).sorted().toArray();
+        System.out.println(active[active.length - 1] * active[active.length - 2]);
     }
 
     private static List<Monkey> readMonkeys() throws IOException {
