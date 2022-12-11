@@ -25,6 +25,19 @@ class Monkey {
 
 public class A11a {
     public static void main(String...a) throws IOException {
+        final List<Monkey> monkeys = readMonkeys();
+
+        for (int r = 0; r < 20; r++) {
+            for (Monkey monkey : monkeys) {
+                for (int item : monkey.items) {
+                    ;
+                }
+                monkey.items.clear();
+            }
+        }
+    }
+
+    private static List<Monkey> readMonkeys() throws IOException {
         final List<String> lines = Files.readAllLines(Paths.get("a-.txt"));
         final int monkeyCount = lines.size() / 7 + 1;
         final List<Monkey> monkeys = new ArrayList<>();
@@ -48,15 +61,6 @@ public class A11a {
                     Integer.parseInt(lines.get(mp + 5).substring(30))));
         }
 
-        for (int r = 0; r < 20; r++) {
-            for (Monkey monkey : monkeys) {
-                for (int item : monkey.items) {
-                    ;
-                }
-                monkey.items.clear();
-            }
-        }
-
-        System.out.println(monkeyCount);
+        return monkeys;
     }
 }
