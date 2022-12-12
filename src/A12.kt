@@ -2,7 +2,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-object A12a {
+object A12 {
     @Throws(IOException::class)
     @JvmStatic
     fun main(a: Array<String>) {
@@ -36,22 +36,20 @@ object A12a {
             for (current in front) {
                 val cx = current.x
                 val cy = current.y
-                val v = puzzle.m[cx][cy]
+                val v = puzzle.m[cx][cy] + 1
 
                 if (cx > 0) {
-                    makeStep(puzzle, v, current, cx - 1, cy)
+                    makeStep(puzzle, v, nextLine, cx - 1, cy)
                 }
                 if (cy > 0) {
-                    makeStep(puzzle, v, current, cx, cy - 1)
+                    makeStep(puzzle, v, nextLine, cx, cy - 1)
                 }
                 if (cx < puzzle.w - 1) {
-                    makeStep(puzzle, v, current, cx + 1, cy)
+                    makeStep(puzzle, v, nextLine, cx + 1, cy)
                 }
                 if (cy < puzzle.h - 1) {
-                    makeStep(puzzle, v, current, cx, cy + 1)
+                    makeStep(puzzle, v, nextLine, cx, cy + 1)
                 }
-
-                nextLine.addAll(current.nextSteps)
             }
 
             if (nextLine.isEmpty()) {
@@ -68,13 +66,13 @@ object A12a {
         return stepCounter
     }
 
-    private fun makeStep(puzzle: Puzzle, v: Int, step: Step, x: Int, y: Int) {
-        if (puzzle.v[x][y] || puzzle.m[x][y] > v + 1) {
+    private fun makeStep(puzzle: Puzzle, v: Int, nextSteps: MutableList<Step>, x: Int, y: Int) {
+        if (puzzle.v[x][y] || puzzle.m[x][y] > v) {
             return
         }
 
         puzzle.v[x][y] = true
-        step.nextSteps.add(Step(x, y))
+        nextSteps.add(Step(x, y))
     }
 }
 
@@ -94,6 +92,7 @@ internal class Puzzle {
         h = lines.size
         m = Array(w) { IntArray(h) }
         v = Array(w) { BooleanArray(h) }
+
         for (y in 0 until h) {
             val line = lines[y]
 
@@ -124,6 +123,4 @@ internal class Puzzle {
     }
 }
 
-internal class Step(val x: Int, val y: Int) {
-    var nextSteps: MutableList<Step> = ArrayList()
-}
+internal class Step(val x: Int, val y: Int)
