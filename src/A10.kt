@@ -6,44 +6,27 @@ object A10 {
     @Throws(IOException::class)
     @JvmStatic
     fun main(a: Array<String>) {
-        val lines = Files.readAllLines(Paths.get("a.txt"))
         var c = 0
         var x = 1
         var s = 0
         var p = 0
-        var f = false
 
-        for (line in lines) {
-            for (l in 0..1) {
-                if (++c % 20 == 0) {
-                    f = !f
-                    if (f) {
-                        s += c * x
-                    }
+        Files.lines(Paths.get("a.txt")).forEach {
+            for (l in 0..(if ("noop" == it) 0 else 1)) {
+                if (++c % 20 == 0 && c % 40 != 0) {
+                    s += c * x
                 }
 
-                if (x - 1 <= p && p <= x + 1) {
-                    print('#')
-                } else {
-                    print('.')
-                }
+                print(if (x - 1 <= p && p <= x + 1) '#' else '.')
 
-                p++
-
-                if (c % 40 == 0) {
+                if (++p == 40) {
                     p = 0
                     println()
                 }
 
-                if ("noop" == line) {
-                    break
+                if (l == 1) {
+                    x += it.substring(5).toInt()
                 }
-
-                if (l == 0) {
-                    continue
-                }
-
-                x += line.substring(5).toInt()
             }
         }
         println(s)
