@@ -11,13 +11,13 @@ enum class Result {
     RIGHT, NOT_RIGHT, SAME
 }
 
-object A13d {
+object A13 {
     private val mapper = jacksonObjectMapper()
 
     @Throws(IOException::class)
     @JvmStatic
     fun main(a: Array<String>) {
-        val lines = Files.readAllLines(Paths.get("a"))
+        val lines = Files.readAllLines(Paths.get("a-"))
         var s = 0
 
         for (i in 0..lines.size / 3) {
