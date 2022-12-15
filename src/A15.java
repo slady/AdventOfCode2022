@@ -14,6 +14,15 @@ public class A15 {
         final List<Interval> intervals = scanners.stream().map(s -> s.createInterval(2000000))
                 .filter(Objects::nonNull).sorted(Comparator.comparingInt(i -> i.s)).toList();
         System.out.println(mergeIntervals(intervals).stream().mapToInt(Interval::getSize).sum() - 1);
+
+        for (int y = 0; y <= 4000000; y++) {
+            final int row = y;
+            final List<Interval> intervalList = mergeIntervals(scanners.stream().map(s -> s.createInterval(row))
+                    .filter(Objects::nonNull).sorted(Comparator.comparingInt(i -> i.s)).toList());
+            if (intervalList.size() != 1) {
+                System.out.println((intervalList.get(0).e + 1L) * 4000000 + y);
+            }
+        }
     }
 
     public static List<Interval> mergeIntervals(List<Interval> arr) {
