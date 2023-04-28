@@ -9,7 +9,7 @@ public class A14 {
     static int max = Integer.MIN_VALUE;
 
     public static void main(String...a) throws IOException {
-        Files.lines(Paths.get("a")).forEach(A14::draw);
+        Files.lines(Paths.get("a-")).forEach(A14::draw);
         int s = 0;
 
         paint();
@@ -25,9 +25,9 @@ public class A14 {
             b[i][max] = true;
         }
 
-//        while (fallSand()) {
-//            s++;
-//        }
+        while (fallSand()) {
+            s++;
+        }
 
         System.out.println(s);
     }
@@ -62,7 +62,7 @@ public class A14 {
                 i--;
                 b[x][i] = true;
             }
-            return true;
+            return false;
         }
 
         return false;
